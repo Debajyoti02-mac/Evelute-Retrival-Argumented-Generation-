@@ -1,0 +1,9 @@
+langchain
+langchain-community
+langchain-groq
+chromadb
+sentence-transformers
+pypdf
+numexpr
+rank-bm25
+faiss-cpu

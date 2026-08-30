@@ -1,0 +1,35 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+.venv/
+.venv2/
+venv/
+env/
+ENV/
+
+# Environment Variables & Keys
+.env
+.env.local
+*.env
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# Vector Stores & Databases
+chroma.sqlite3
+MultiAgent_DB/
+*.index
+*.faiss
+
+# Local Data / PDFs (optional: uncomment if your PDFs are large or private)
+# *.pdf
