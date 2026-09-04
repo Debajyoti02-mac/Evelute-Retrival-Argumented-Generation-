@@ -1,36 +1,39 @@
 # 🚀 Hybrid RAG System with RRF & Ragas Evaluation
 
-An advanced Retrieval-Augmented Generation (RAG) pipeline that combines Semantic Search and Keyword Search to deliver highly accurate context to a Groq-powered LLM. The pipeline is automatically graded for quality using the **Ragas** evaluation framework.
+An end-to-end Retrieval-Augmented Generation (RAG) pipeline combining dense and sparse search, powered by a local **Ollama** model (`qwen2.5:1.5b`) and graded with **Ragas**.
 
 ---
 
 ## ✨ Key Features
 
-- **Hybrid Retrieval Mechanism:** Combines dense vector search (**ChromaDB**) with sparse keyword search (**BM25**) to find the most relevant document chunks.
-- **Reciprocal Rank Fusion (RRF):** Intelligently merges and re-ranks the results from both ChromaDB and BM25 to ensure the best possible context is sent to the LLM.
-- **Fast LLM Generation:** Powered by **Groq** (`ChatGroq`) for lightning-fast response generation.
-- **Automated Evaluation:** Uses **Ragas** to score the pipeline across four key metrics, ensuring the LLM doesn't hallucinate and accurately relies on the provided documents.
+* **Hybrid Retrieval:** Dense vector search (**ChromaDB**) + sparse keyword search (**BM25**).
+* **Reciprocal Rank Fusion (RRF):** Fuses and re-ranks top results from both retrievers.
+* **Local & Lightweight:** Uses **Ollama** (`qwen2.5:1.5b`) to run fast generation locally without cloud API costs or high memory overhead.
+* **Automated Evaluation:** Grades performance using **Ragas** metrics (`faithfulness`, `answer_relevancy`, `context_precision`, `context_recall`).
 
 ---
 
 ## 🏗️ Architecture Flow
 
-1. **Document Processing:** Loads a local PDF (`Static GK 2025.pdf`), splits it into chunks of 1400 characters, and hashes IDs to avoid duplication.
-2. **Indexing:**
-   - Embeds chunks using `all-MiniLM-L6-v2` and stores them in a persistent **ChromaDB**.
-   - Tokenizes chunks and builds a **BM25** corpus for exact-match keyword search.
-3. **Retrieval (RRF):** Queries both databases, limits ChromaDB by a distance threshold (1.5), and mathematically fuses the ranks together using RRF.
-4. **Generation:** Passes the fused text strings to Groq to generate a final answer.
-5. **Evaluation:** Packages the Query, Response, Retrieved Contexts, and Ground Truth into a HuggingFace `Dataset` and grades it using Ragas.
+1. **Indexing:** Splits local documents into 1,400-character chunks, embeds them with `all-MiniLM-L6-v2` into **ChromaDB**, and tokenizes a **BM25** corpus.
+2. **Retrieval:** Queries ChromaDB and BM25 simultaneously, applies a distance threshold, and combines results via **RRF**.
+3. **Generation:** Passes fused contexts to **`qwen2.5:1.5b`** via `ChatOllama` (`keep_alive="0s"`) to synthesize the answer.
+4. **Evaluation:** Builds a HuggingFace `Dataset` and runs Ragas evaluation.
 
 ---
 
-## ⚙️ Prerequisites & Setup
+## ⚙️ Quickstart
 
 ### 1. Install Dependencies
 
-You will need the following Python libraries installed:
+```bash
+pip install langchain-community langchain-text-splitters chromadb sentence-transformers rank-bm25 datasets ragas pypdf langchain-ollama python-dotenv langchain-huggingface
+
+```
+
+### 2. Pull the Local Model
 
 ```bash
-pip install langchain-community langchain-text-splitters chromadb sentence-transformers rank-bm25 datasets ragas pypdf langchain-groq python-dotenv langchain-huggingface
+ollama pull qwen2.5:1.5b
+
 ```
